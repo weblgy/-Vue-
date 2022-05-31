@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Lifeblog.com</title>
+    <script type="text/javascript" src="js/friends.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/friends.css" />
+</head>
+
+<body>
+    <!-- 轮播图 -->
+    <div id="content">
+        <div id="carousel_wrap">
+            <div id="carousel_images">
+                <!-- 前后分别加上一张图片，方便无缝过渡显示。可以使用JS DOM增加节点操作省去该步骤 -->
+                <img src="https://s2.ax1x.com/2019/06/05/VNGTdP.jpg">
+                <img src="https://s2.ax1x.com/2019/06/05/VNG5qI.jpg">
+                <img src="https://s2.ax1x.com/2019/06/05/VNGoZt.jpg">
+                <img src="https://s2.ax1x.com/2019/06/05/VNGTdP.jpg">
+                <img src="https://s2.ax1x.com/2019/06/05/VNG5qI.jpg">
+            </div>
+            <span class="arrow left-arrow">&lt;</span>
+            <span class="arrow right-arrow">&gt;</span>
+            <div id="dots">
+                <!-- 使用小点标记实际多少张图片，要添加图片时需要修改carousel_images和此处 -->
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        <div id="test">
+            <h1>blog</h1>
+            <h1>blogs</h1>
+            <h1>blog</h1>
+            <h1>blog</h1>
+        </div>
+    </div>
+    <!-- END 轮播图 -->
+</body>
+
+<style>
+    
+    body {
+        margin: 0;
+        
+        overflow: scroll;
+    }
+
+    /* 轮播图样式表 */
+
+    #content #carousel_wrap {
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        /* 轮播图宽度 */
+        overflow: hidden;
+    }
+
+    #content #carousel_wrap #carousel_images {
+        position: absolute;
+        border: 0;
+        outline: none;
+        white-space: nowrap;
+        /* 将图片一行排列 */
+        width: 100%;
+        font-size: 0;
+        /* 清除white-space间隙 */
+        margin: 0px;
+    }
+
+    #content #carousel_wrap #carousel_images img {
+        width: 100%;
+    }
+
+    #content #carousel_wrap .arrow {
+        position: absolute;
+        font-weight: bold;
+        font-size: 50px;
+        color: lightgray;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        transition-property: opacity;
+        transition-duration: 0.5s;
+    }
+
+    #content #carousel_wrap .arrow:hover {
+        opacity: 0.5;
+    }
+
+    #content #carousel_wrap .left-arrow {
+        left: 20px;
+    }
+
+    #content #carousel_wrap .right-arrow {
+        right: 20px;
+    }
+
+    #content #carousel_wrap #dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%)
+    }
+
+    #content #carousel_wrap .dot {
+        background-color: white;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 4px;
+        opacity: 0.2;
+        cursor: pointer;
+    }
+
+    #content #carousel_wrap .active {
+        opacity: 1;
+    }
+
+    .transition {
+        transition-property: left;
+        transition-duration: 1s;
+    }
+
+    /* END 轮播图样式表 */
+</style>
+
+<script>
+    window.onload = function () {
+        var carouImg = document.getElementById("carousel_images");
+        var carouWrap = document.getElementById("carousel_wrap");
+        var img = carouImg.getElementsByTagName("img")[0];
+        var leftArrow = document.getElementsByClassName("left-arrow")[0];
+        var rightArrow = document.getElementsByClassName("right-arrow")[0];
+        var oBtn = document.getElementsByClassName("dot");
+        var index = 0;
+        var index_length = oBtn.length;
+
+        // 给图片添加过渡效果
+        carouImg.classList.add("transition");
+
+        // 动态获取绝对定位轮播图的高度，设置carousel_wrap的高度，宽度为整个main宽度
+        // 如果mystyle.css中使用overflow:auto->含有滚动条宽度; 故使用overflow:scroll
+        carouImg.style.left = -img.clientWidth + "px";
+        console.log(carouImg.style.left);
+        carouWrap.style.height = img.offsetHeight + "px";
+
+        // 监听body大小变化，修改轮播图的图片位置和高度
+        document.body.onresize = function () {
+            carouImg.style.left = -img.clientWidth + "px";
+            carouWrap.style.height = img.offsetHeight + "px";
+        }
+
+        // 点击右箭头
+        rightArrow.onclick = function () {
+            next_pic();
+            showCurrentDot(index);
+        }
+
+        // 点击左箭头
+        leftArrow.onclick = function () {
+            pre_pic();
+            showCurrentDot(index);
+        }
+
+        // 点击小点
+        for (let i = 0; i < oBtn.length; ++i) {
+            oBtn[i].onclick = function () {
+                var newLeft = (-img.clientWidth) * (i + 1);
+                carouImg.style.left = newLeft + 'px';
+                console.log(i);
+                showCurrentDot(i);
+            }
+        }
+
+        // 下一张图片
+        function next_pic() {
+            var left = parseInt(carouImg.style.left);
+            if (left <= (-img.clientWidth) * (index_length + 1)) {
+                // 临界情况判断
+                carouImg.classList.remove("transition");
+                var newLeft = -img.clientWidth * 1;
+                carouImg.style.left = newLeft + 'px';
+                newLeft = -img.clientWidth * 2;
+                carouImg.classList.add("transition");
+                index = 1;
+            } else {
+                // 一般情况
+                var newLeft = parseInt(carouImg.style.left) - img.clientWidth;
+                (index == (index_length - 1)) ? index = 0: index += 1;
+            }
+            carouImg.style.left = newLeft + 'px'; // 不要忘记添加'px'
+            console.log(newLeft);
+        }
+
+        // 上一张图片
+        function pre_pic() {
+            var left = parseInt(carouImg.style.left);
+            if (left >= -10) {
+                // 临界情况判断
+                carouImg.classList.remove("transition");
+                var newLeft = -img.clientWidth * index_length;
+                carouImg.style.left = newLeft + 'px';
+                newLeft = -img.clientWidth * (index_length - 1);
+                carouImg.classList.add("transition");
+                index = index_length - 2;
+            } else {
+                // 一般情况
+                var newLeft = parseInt(carouImg.style.left) + img.clientWidth;
+                (index == 0) ? index = (index_length - 1): index -= 1;
+            }
+            carouImg.style.left = newLeft + 'px';
+            console.log(newLeft);
+        }
+
+        function showCurrentDot(index) {
+            for (let i = 0; i < oBtn.length; ++i) {
+                (i == index) ? oBtn[i].classList.add("active"): oBtn[i].classList.remove("active");
+            }
+        }
+
+        // 设置轮播定时器
+        var timer = setInterval(function () {
+            next_pic();
+            showCurrentDot(index);
+        }, 3000);
+
+        carouWrap.onmouseover = function () {
+            clearInterval(timer);
+        }
+
+        carouWrap.onmouseout = function () {
+            timer = setInterval(function () {
+                next_pic();
+                showCurrentDot(index);
+            }, 3000);
+        }
+    }
+</script>
+
+</html>

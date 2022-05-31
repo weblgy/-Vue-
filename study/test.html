@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=1.0,initial-scale=1.0,width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <canvas width="1080" height="980"></canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementsByTagName("canvas")[0];
+        var context = canvas.getContext("2d");
+        var arr = []
+        var arr2 = []
+        // 获取每次点击时坐标位置
+        canvas.onclick = function (e) {
+            var e = event || window.event;
+            // 设置填充颜色
+            context.fillStyle = "#f0f";
+            context.lineWidth = 1;
+            context.strokeStyle = "#0ff";
+            // 绘制点
+            context.fillRect(e.offsetX, e.offsetY, 4, 4);
+            // 将每次点击的点的坐标位置进行储存
+            if (arr.length < 4) {
+                arr.push([e.offsetX, e.offsetY])
+            }
+            if (arr.length == 4) {
+                // 循环清除绘制的点
+                for (item of arr) {
+                    context.clearRect(item[0], item[1], 4, 4);
+                }
+                // 绘制起始点及路径点
+                context.moveTo(arr[0][0], arr[0][1]);
+                context.lineTo(arr[1][0], arr[1][1]);
+                context.lineTo(arr[2][0], arr[2][1]);
+                context.lineTo(arr[3][0], arr[3][1]);
+                // context.lineTo(60, 40);
+                // 填充当前绘图（路径)
+                context.fill(); 
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body,
+        div {
+            margin: 0;
+            padding: 0;
+        }
+
+        #d1 {
+            width: 500px;
+            height: 400px;
+            border: 2px solid #00FFD1;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="d1">
+        <canvas id="myCanvas" width="500" height="400">
+        </canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        var isMove = false
+        let img = new Image();
+        let ax, ay, x, y;
+        img.src = "../src/assets/cabinet.png";
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, 100, 100);
+        }
+        canvas.onmousedown = function (e) {
+            isMove = true
+            canvas.style.cursor = "move"
+        }
+        canvas.onmouseup = function (e) {
+            isMove = false;
+            canvas.style.cursor = "default";
+        }
+        canvas.onmousemove = function (e) {
+            if (isMove) {
+                x = e.clientX;
+                y = e.clientY
+                console.log(x, y);
+                //限制移动不能超出画布
+                (x < 173) ? ax = 75: ax = 425;
+                (y < 148) ? ay = 50: ay = 350;
+                (x < 425 && x > 75) ? x = e.clientX: x = ax;
+                (y > 50 && y < 350) ? y = e.clientY: y = ay;
+                //先清除之前的然后重新绘制
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                ctx.drawImage(img, x - 75, y - 50, 100, 100)
+
+            }
+        }
+    </script>
+</body>
+
+</html>

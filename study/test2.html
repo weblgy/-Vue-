@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="1900" height="900" style="border: 1px solid #555; display: block;margin: 0 auto;"></canvas>
+    <button onclick=" Arrow.draw(ctx, canvas.width / 2,canvas.height / 2)">新增箭头</button>
+</body>
+<script>
+    const config = {
+        maxScale: 4.0, // 最大放大倍数
+        minScale: 0.1, // 最小放大倍数
+        step: 0.1 // 每次放大、缩小 倍数的变化值
+    }
+    let arrow = function () {
+        this.x = 0;
+        this.y = 0;
+        this.color = "rgba(28, 245, 254, 0.5)"
+        this.rolation = 0;
+        this.scale = 1.0
+    }
+    const canvas = document.querySelector('canvas')
+    const ctx = canvas.getContext('2d');
+    ctx.setLineDash([5, 15]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#0ff";
+
+    arrow.prototype.draw = function (ctx, x, y) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(this.scale, this.scale)
+        ctx.rotate(this.rolation)
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.moveTo(0, 15);
+        ctx.lineTo(-50, 15);
+        ctx.lineTo(-50, -15);
+        ctx.lineTo(0, -15);
+        ctx.lineTo(0, -35);
+        ctx.lineTo(50, 0);
+        ctx.lineTo(0, 35);
+        ctx.closePath()
+        ctx.stroke(); //绘制已定义的路径
+        ctx.fill();
+        ctx.restore();
+
+    }
+    const Arrow = new arrow();
+    Arrow.x = canvas.width / 2;
+    Arrow.y = canvas.height / 2;
+
+    var c_x, c_y; //相对于canvas坐标的位置；
+    var isMouseDown = false;
+    var isMouseMove = false
+    Arrow.draw(ctx, Arrow.x, Arrow.y)
+
+    canvas.oncontextmenu = function (e) {
+        e.preventDefault();
+        // 执行代码块
+    }
+    canvas.onmousewheel = function (e) {
+        if (e.wheelDelta > 0) {
+            Arrow.scale = (Arrow.scale >= config.maxScale) ? config.maxScale : Arrow.scale + config
+                .step;
+        } else {
+            Arrow.scale = (Arrow.scale <= config.minScale) ? config.minScale : Arrow.scale - config
+                .step;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        requestAnimationFrame(drawFram)
+    }
+    canvas.addEventListener('mousedown', function (e) {
+        switch (e.button) {
+            case 0:
+                isMouseDown = true;
+                break;
+            case 2:
+                isMouseMove = true;
+                break;
+            default:
+                break;
+        }
+
+    }, false)
+
+    canvas.addEventListener('mousemove', function (e) {
+        if (isMouseDown == true) {
+            c_x = getPos(e).x - canvas.offsetLeft;
+            c_y = getPos(e).y - canvas.offsetTop;
+            Arrow.x = c_x
+            Arrow.y = c_y
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+            // requestAnimationFrame(drawFram)
+            drawFram()
+        }
+        if (isMouseMove == true) {
+            c_x = getPos(e).x - canvas.offsetLeft;
+            c_y = getPos(e).y - canvas.offsetTop;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //setInterval(drawFram,1000/60)
+            requestAnimationFrame(drawFram)
+
+        }
+    }, false)
+
+
+    canvas.addEventListener('mouseup', function (e) {
+        isMouseDown = false;
+        isMouseMove = false
+    }, false)
+
+    function drawFram() {
+        let dx = c_x - Arrow.x;
+        let dy = c_y - Arrow.y;
+        Arrow.rolation = Math.atan2(dy, dx);
+        Arrow.draw(ctx, canvas.width / 2,canvas.height / 2)
+        Arrow.draw(ctx,Arrow.x,Arrow.y)
+    }
+
+    function getPos(e) {
+        var mouse = {
+            x: 0,
+            y: 0
+        }
+        var e = e || event;
+        var x, y;
+        if (e.pageX || e.pageY) {
+            x = e.pageX;
+            y = e.pageY;
+        } else {
+            x = e.pageX + document.body.scrollLeft + document.document.documentElement.scrollLeft;
+            y = e.pageY + document.body.scrollTop + document.document.documentElement.scrollTop;
+        }
+        mouse.x = x;
+        mouse.y = y;
+        return mouse;
+    }
+</script>
+
+</html>
