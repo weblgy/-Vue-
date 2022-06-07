@@ -18,19 +18,19 @@
 // .then() 传入的函数会按顺序依次执行，有任何异常都会直接跳到 catch 序列：
 
 
-// new Promise(function (reslove, reject) {
-//     console.log(1111);
-//     reslove(2222)
-// }).then(function (value) {
-//     console.log(value);
-//     return 3333
-// }).then(function (value) {
-//     console.log(value);
-//     throw "an error"
-// }).catch(function (err) {
-//     console.log(err);
-// })
-
+/* new Promise(function (reslove, reject) {
+    console.log(1111);
+    reslove(2222)
+}).then(function (value) {
+    console.log(value);
+    return 3333
+}).then(function (value) {
+    console.log(value);
+    throw "an error"
+}).catch(function (err) {
+    console.log(err);
+})
+ */
 //resolve() 中可以放置一个参数用于向下一个 then 传递一个值，then 中的函数也可以返回一个值传递给 then。
 //但是，如果 then 中返回的是一个 Promise 对象，那么下一个 then 将相当于对这个返回的 Promise 进行操作，这一点从刚才的计时器的例子中可以看出来。
 //reject() 参数中一般会传递一个异常给之后的 catch 函数用于处理异常。
