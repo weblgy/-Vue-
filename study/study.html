@@ -7,7 +7,14 @@
     <title>Document</title>
 </head>
 <body>
+    <button onclick="play()">播放</button>
     
 </body>
+
+<script>
+    function play() {
+        window.speechSynthesis.speak(new window.SpeechSynthesisUtterance('你好，世界！'))
+    }
+</script>
 
 </html>

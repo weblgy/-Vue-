@@ -7,7 +7,10 @@ export default {
   components: {},
   props: {},
   data() {
-    return {};
+    return {
+      baseTexture: require("../assets/globe.jpg"),
+      heightTexture:require("../assets/height.jpg")
+    };
   },
   watch: {},
   computed: {},
@@ -15,8 +18,8 @@ export default {
     drawEchart() {
       /****************** 3D地球 ********************/
 
-      var ROOT_PATH =
-        "https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples";
+      // var ROOT_PATH =
+      //   "https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples";
       //初始化echart实例
       const globe3D = this.$echarts.init(document.getElementById("globe3D"));
       const resizeDiv = document.getElementById("globe3D");
@@ -27,10 +30,9 @@ export default {
       const globeOpt = {
         globe: {
           zoom: 0.9,
-          environment: ROOT_PATH + "/data-gl/asset/starfield.jpg", //环境贴图
-          baseTexture: ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg", //地球的纹理
-          heightTexture:
-            ROOT_PATH + "/data-gl/asset/world.topo.bathy.200401.jpg", //地图的高度纹理
+          environment: "none", //环境贴图
+          baseTexture: this.baseTexture, //地球的纹理
+          heightTexture:this.heightTexture, //地图的高度纹理
           displacementScale: 0, //地球顶点位移的大小
           shading: "realistic", //着色效果，真实感渲染
           realisticMaterial: {
